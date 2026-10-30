@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UKRA — Site specification</title>
+  <link rel="stylesheet" href="style.noncritical.css">
+</head>
+<body>
+  <main class="container page-shell">
+    <header class="page-hero">
+      <h1>UKRA — Site specification</h1>
+      <p>Concise site-level specification mapping the UKRA 2026–2055 blueprint to the current static prototype and the next implementation steps.</p>
+    </header>
+
+    <section class="list-block">
+      <h3>Objective</h3>
+      <p>Deliver a connected, auditable public-facing site that acts as the digital operating system for the £2tn UKRA programme. Prioritise traceability (national → region → city → neighbourhood → project → contract → budget → progress → outcome).</p>
+    </section>
+
+    <section class="list-block">
+      <h3>Top-level navigation</h3>
+      <ul>
+        <li>Home</li>
+        <li>UKRA (mission, governance, technical councils, oversight)</li>
+        <li>2055 Plan (Britain 2055)</li>
+        <li>Projects (index, map, filter, project pages)</li>
+        <li>Infrastructure (energy, water, transport, digital)</li>
+        <li>Housing (standards, design library, portal)</li>
+        <li>Public Services (health, police, fire, prisons, education)</li>
+        <li>Standards (technical libraries)</li>
+        <li>Procurement & Contractors</li>
+        <li>Finance</li>
+        <li>Environment</li>
+        <li>Jobs & Skills</li>
+        <li>Transparency (open data, API, audits, risk register)</li>
+      </ul>
+    </section>
+
+    <section class="list-block">
+      <h3>Pages to create or standardise (priority)</h3>
+      <ol>
+        <li>Site specification (this document)</li>
+        <li>Project page template (reusable)</li>
+        <li>Interactive map (map.html) with region filters and summary panel</li>
+        <li>Project index (search + filters)</li>
+        <li>City portal template (City 2055 timeline + map)</li>
+        <li>Infrastructure capacity view (certificate view) — interactive development assessment and "Infrastructure Capacity Certificate"</li>
+        <li>Law &amp; Planning portal (planning reform, construction law, approvals, development zones)</li>
+        <li>Transparency centre (open data index + API links)</li>
+      </ol>
+    </section>
+
+    <section class="list-block">
+      <h3>Law & Planning (new top-level section)</h3>
+      <p>Make construction law, planning reform and approval routes first-class parts of the site. Each reform or proposal must publish:</p>
+      <ul>
+        <li>Current law / guidance</li>
+        <li>Problem statement and evidence</li>
+        <li>European comparisons</li>
+        <li>Proposed amendment and classification (Keep / Modify / Replace / Remove / Create)</li>
+        <li>Expected benefits, cost, risks and safeguards</li>
+        <li>Consultation documents and decision timeline</li>
+      </ul>
+    </section>
+
+    <section class="list-block">
+      <h3>Infrastructure Capacity Certificate (feature)</h3>
+      <p>Implement the blueprint's infrastructure-first idea as an interactive assessment that evaluates whether a development is infrastructure-ready across utilities, transport, schools, healthcare, green space, flood risk and biodiversity. Key outputs:</p>
+      <ul>
+        <li>Per-development Infrastructure Capacity table (current vs required with traffic-light status)</li>
+        <li>Development status (infrastructure-ready / not infrastructure-ready)</li>
+        <li>List of required investments or mitigations (grid reinforcement, sewer upgrades, school places, etc.)</li>
+        <li>Publicly visible certificate and links to planning applications and funding actions</li>
+      </ul>
+    </section>
+
+    <section class="list-block">
+      <h3>City portals (City 2055)</h3>
+      <p>Elevate city pages into City 2055 portals with phased timelines (current, 2030, 2035, 2045, 2055), interactive maps, housing and infrastructure requirements, and project timelines. Make each portal a control panel for regional outcomes.</p>
+    </section>
+
+    <section class="list-block">
+      <h3>Data model overview</h3>
+      <p>Every major object should be linked and queryable. Example primary objects:</p>
+      <pre>
+Project {
+  id,
+  title,
+  description,
+  sector,
+  region_id,
+  city_id,
+  neighbourhood_id,
+  coordinates,
+  start_date,
+  expected_completion,
+  status,
+  capacity,
+  budget_id,
+  contractors[],
+  documents[],
+  progress[],
+  risks[],
+  outcomes[]
+}
+
+Budget { id, project_id, approved, committed, spent, forecast, funding_sources[] }
+
+Contractor { id, company_name, contracts[], performance_score, safety_record }
+
+InfrastructureCapacity { id, project_id, electricity, water, sewerage, roads, rail, fibre, schools, healthcare }
+      </pre>
+      <p>Design the site so HTML pages can be populated from the same data model (static templates + placeholder data initially, ready for dynamic wiring later).</p>
+    </section>
+
+    <section class="list-block">
+      <h3>UI components (reusable)</h3>
+      <ul>
+        <li>Stat cards (clickable, link to data)</li>
+        <li>Project progress timeline component (phase badges)</li>
+        <li>Standards compare matrix</li>
+        <li>Region/city summary panel</li>
+        <li>Contractor profile card</li>
+        <li>Document viewer (PDF/links)</li>
+        <li>Map with layered GIS toggles</li>
+      </ul>
+    </section>
+
+    <section class="list-block">
+      <h3>Accessibility, content and data rules</h3>
+      <ul>
+        <li>High contrast, legible typography (black text by default)</li>
+        <li>Keyboard and screen-reader accessibility for maps and filters</li>
+        <li>Every statistic must link to source data or an explanation</li>
+        <li>Use labelled placeholders for missing live data</li>
+        <li>Do not invent or publish live statistics without source</li>
+      </ul>
+    </section>
+
+    <section class="list-block">
+      <h3>API & data export</h3>
+      <p>Expose non-sensitive datasets via a public API. Suggested endpoints:</p>
+      <pre>
+GET /api/projects
+GET /api/projects/:id
+GET /api/regions
+GET /api/finance/summary
+GET /api/infrastructure-capacity/:project_id
+GET /api/contractors
+      </pre>
+    </section>
+
+    <section class="list-block">
+      <h3>Next steps (immediate)</h3>
+      <ol>
+        <li>Review this site-spec and confirm structure</li>
+        <li>Create Project page template (project-template.html) and add one sample project</li>
+        <li>Create map.html (interactive stub) and link it from navigation</li>
+        <li>Iterate on data mapping and create JSON schema files</li>
+      </ol>
+    </section>
+
+    <footer class="data-card">
+      <p>Prepared as a concise working specification to convert the existing prototype into a connected public reconstruction site. Use this file as the canonical plan for the next implementation steps.</p>
+    </footer>
+  </main>
+</body>
+</html>

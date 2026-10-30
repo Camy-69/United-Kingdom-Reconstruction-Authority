@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Project — Template</title>
+  <link rel="stylesheet" href="style.noncritical.css">
+</head>
+<body>
+  <header class="site-header"><div class="container site-header__inner"><a class="brand" href="index.html"><span class="logo-icon">UK</span><div class="logo-text"><h1>UKRA</h1><span>United Kingdom Reconstruction Authority</span></div></a><nav class="main-nav" aria-label="Main navigation"><a href="index.html#home">Home</a><a href="index.html#projects">Projects</a></nav></div></header>
+
+  <main class="container page-shell">
+    <div class="page-top">
+      <section class="page-hero">
+        <span class="page-hero__eyebrow">Project</span>
+        <h1 id="project-title">[Project title]</h1>
+        <p id="project-summary">Short project summary goes here. One sentence describing purpose and impact.</p>
+      </section>
+      <aside class="summary-panel">
+        <h3>Project snapshot</h3>
+        <ul class="summary-list">
+          <li><span>Sector</span><strong id="project-sector">Housing</strong></li>
+          <li><span>Region</span><strong id="project-region">Region name</strong></li>
+          <li><span>Status</span><strong id="project-status">Planning</strong></li>
+          <li><span>Expected completion</span><strong id="project-complete">2035</strong></li>
+        </ul>
+      </aside>
+    </div>
+
+    <section class="content-grid content-grid--overview">
+      <article class="list-block">
+        <h3>Overview</h3>
+        <p id="project-desc">Full project description, objectives, beneficiaries and high-level benefits.</p>
+        <dl>
+          <div><dt>Start date</dt><dd id="project-start">2026-01-01</dd></div>
+          <div><dt>Budget (approved)</dt><dd id="project-budget">£0</dd></div>
+          <div><dt>Capacity / beneficiaries</dt><dd id="project-capacity">[e.g. 1,000 homes]</dd></div>
+        </dl>
+      </article>
+
+      <aside class="data-card">
+        <h3>Finance</h3>
+        <div class="mini-table">
+          <div class="mini-table__row"><span>Approved</span><strong id="finance-approved">£X</strong><em>source</em></div>
+          <div class="mini-table__row"><span>Committed</span><strong id="finance-committed">£Y</strong><em>source</em></div>
+          <div class="mini-table__row"><span>Spent</span><strong id="finance-spent">£Z</strong><em>source</em></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="content-grid content-grid--project">
+      <article class="list-block">
+        <h3>Contractor and delivery partners</h3>
+        <p id="project-contractor">Primary contractor, consultants and key subcontractors with links to contractor profiles.</p>
+
+        <h3>Progress</h3>
+        <div id="project-timeline">
+          <p>Timeline: Planning → Design → Approval → Procurement → Construction → Commissioning → Completion → 5-year review</p>
+        </div>
+
+        <h3>Risks</h3>
+        <ul id="project-risks">
+          <li>Schedule risk: description</li>
+          <li>Cost risk: description</li>
+          <li>Environmental risk: description</li>
+        </ul>
+      </article>
+
+      <aside class="data-card">
+        <h3>Documents</h3>
+        <ul>
+          <li><a id="doc-planning" href="#">Planning documents</a></li>
+          <li><a id="doc-design" href="#">Design documents</a></li>
+          <li><a id="doc-audit" href="#">Audit reports</a></li>
+        </ul>
+
+        <h3>Public benefits</h3>
+        <ul>
+          <li id="benefit-jobs">Jobs: X</li>
+          <li id="benefit-homes">Homes: Y</li>
+          <li id="benefit-services">Services: Z</li>
+        </ul>
+      </aside>
+    </section>
+
+  </main>
+  <footer class="site-footer"><div class="container site-footer__grid"><div><strong>UKRA</strong><p>United Kingdom Reconstruction Authority</p></div><div><p>Project • Transparency • Public value</p></div></div></footer>
+
+  <script>
+    // Load project data from projects.json, budgets.json and contractors.json and populate the template
+    (async function(){
+      function qs(name){ return new URLSearchParams(location.search).get(name); }
+      function fmtCurrency(n){ try { return new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format(n); } catch(e){ return n; } }
+
+      try{
+        const [projectsRes, budgetsRes, contractorsRes] = await Promise.all([
+          fetch('projects.json'), fetch('budgets.json'), fetch('contractors.json')
+        ]);
+        const projects = await projectsRes.json();
+        const budgets = await budgetsRes.json();
+        const contractors = await contractorsRes.json();
+
+        const id = qs('id');
+        const titleParam = qs('title');
+        let project = null;
+        if(id){ project = projects.find(p => p.id === id); }
+        if(!project && titleParam){ const t = decodeURIComponent(titleParam).toLowerCase(); project = projects.find(p => p.title && p.title.toLowerCase() === t); }
+        if(!project){ project = projects[0]; }
+        if(!project){ return; }
+
+        // populate simple fields
+        document.getElementById('project-title').textContent = project.title || '';
+        document.getElementById('project-summary').textContent = project.description ? project.description.split('.').slice(0,1).join('.') + '.' : '';
+        document.getElementById('project-sector').textContent = project.sector || '';
+        document.getElementById('project-region').textContent = project.region_id || '';
+        document.getElementById('project-status').textContent = project.status || '';
+        document.getElementById('project-complete').textContent = project.expected_completion || '';
+
+        document.getElementById('project-desc').textContent = project.description || '';
+        document.getElementById('project-start').textContent = project.start_date || '';
+
+        // budget
+        const budget = budgets.find(b => b.id === project.budget_id || b.project_id === project.id);
+        if(budget){
+          document.getElementById('project-budget').textContent = fmtCurrency(budget.approved || 0);
+          document.getElementById('finance-approved').textContent = fmtCurrency(budget.approved || 0);
+          document.getElementById('finance-committed').textContent = fmtCurrency(budget.committed || 0);
+          document.getElementById('finance-spent').textContent = fmtCurrency(budget.spent || 0);
+        }
+
+        // capacity
+        if(project.capacity){
+          if(typeof project.capacity === 'object') document.getElementById('project-capacity').textContent = `${project.capacity.value} ${project.capacity.type}`;
+          else document.getElementById('project-capacity').textContent = project.capacity;
+        }
+
+        // contractors
+        if(project.contractors && project.contractors.length){
+          const names = project.contractors.map(cid => {
+            const c = contractors.find(x=>x.id===cid);
+            if(c) return `<a href="#" title="View contractor">${c.company_name}</a>`;
+            return cid;
+          });
+          document.getElementById('project-contractor').innerHTML = names.join(', ');
+        }
+
+        // documents
+        if(project.documents && project.documents.length){
+          project.documents.forEach(doc => {
+            const a = document.getElementById('doc-planning');
+            if(a && a && a.getAttribute('href') === '#'){
+              // replace planning link if present
+            }
+          });
+          // populate links where appropriate
+          const docPlanning = project.documents.find(d=>d.type==='planning') || project.documents[0];
+          if(docPlanning){ const el = document.getElementById('doc-planning'); el.href = docPlanning.url || '#'; el.textContent = docPlanning.title; }
+          const docDesign = project.documents.find(d=>d.type==='design'); if(docDesign){ const el = document.getElementById('doc-design'); el.href = docDesign.url; el.textContent = docDesign.title; }
+          const docAudit = project.documents.find(d=>d.type==='audit'); if(docAudit){ const el = document.getElementById('doc-audit'); el.href = docAudit.url; el.textContent = docAudit.title; }
+        }
+
+        // timeline/progress
+        const timelineEl = document.getElementById('project-timeline');
+        if(project.progress && project.progress.length){
+          timelineEl.innerHTML = '<ol>' + project.progress.map(p => `<li><strong>${p.phase}</strong> <small>${p.date || ''}</small><div>${p.notes || ''}</div></li>`).join('') + '</ol>';
+        }
+
+        // risks
+        const risksEl = document.getElementById('project-risks');
+        if(project.risks && project.risks.length){
+          risksEl.innerHTML = project.risks.map(r => `<li><strong>${r.category} (${r.level})</strong>: ${r.description}</li>`).join('');
+        }
+
+        // public benefits
+        const benefits = (project.outcomes || []).reduce((acc, o) => { acc[o.metric] = o.value; return acc; }, {});
+        if(benefits.jobs) document.getElementById('benefit-jobs').textContent = `Jobs: ${benefits.jobs}`;
+        if(benefits.homes) document.getElementById('benefit-homes').textContent = `Homes: ${benefits.homes}`;
+        if(benefits.services) document.getElementById('benefit-services').textContent = `Services: ${benefits.services}`;
+
+      }catch(err){
+        console.error('Failed to load project data', err);
+      }
+    })();
+  </script>
+</body>
+</html>

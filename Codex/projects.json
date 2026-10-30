@@ -1,0 +1,42 @@
+[
+  {
+    "id": "proj-leeds-hospital",
+    "title": "Leeds Regional Hospital",
+    "description": "A new regional hospital to expand acute and emergency care capacity in West Yorkshire.",
+    "sector": "healthcare",
+    "region_id": "yorkshire-and-humber",
+    "city_id": "leeds",
+    "neighbourhood_id": "leeds-east",
+    "coordinates": { "lat": 53.8008, "lon": -1.5491 },
+    "start_date": "2026-04-01",
+    "expected_completion": "2035-09-30",
+    "status": "construction",
+    "capacity": { "type": "beds", "value": 1000 },
+    "budget_id": "budg-leeds-hospital",
+    "contractors": ["cont-arcadia-construction"],
+    "documents": [{"id":"doc-1","title":"Planning application","url":"https://example.org/docs/leeds-planning.pdf","type":"planning"}],
+    "progress": [{"phase":"Construction started","date":"2028-01-15","notes":"Phase 1 enabling works complete."}],
+    "risks": [{"id":"r1","category":"schedule","level":"amber","description":"Supply chain delays for specialised equipment."}],
+    "outcomes": [{"metric":"beds","value":1000},{"metric":"jobs_created","value":4200}]
+  },
+  {
+    "id": "proj-eastside-housing",
+    "title": "Eastside Housing Regeneration",
+    "description": "Mixed-tenure housing development with 2,100 new homes, delivered alongside local services and transport upgrades.",
+    "sector": "housing",
+    "region_id": "east-midlands",
+    "city_id": "nottingham",
+    "neighbourhood_id": "eastside",
+    "coordinates": { "lat": 52.9548, "lon": -1.1581 },
+    "start_date": "2027-09-01",
+    "expected_completion": "2042-12-31",
+    "status": "design",
+    "capacity": { "type": "homes", "value": 2100 },
+    "budget_id": "budg-eastside-housing",
+    "contractors": ["cont-nova-developments","cont-greentech-construction"],
+    "documents": [{"id":"doc-2","title":"Design code","url":"https://example.org/docs/eastside-design.pdf","type":"design"}],
+    "progress": [{"phase":"Design phase","date":"2026-11-01","notes":"Masterplan approved by local authority."}],
+    "risks": [{"id":"r2","category":"infrastructure","level":"red","description":"Sewerage capacity requires upgrading prior to commencement."}],
+    "outcomes": [{"metric":"homes","value":2100},{"metric":"affordable_share","value":"35%"}]
+  }
+]

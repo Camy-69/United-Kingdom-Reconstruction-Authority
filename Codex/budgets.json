@@ -1,0 +1,24 @@
+[
+  {
+    "id": "budg-leeds-hospital",
+    "project_id": "proj-leeds-hospital",
+    "currency": "GBP",
+    "approved": 1800000000,
+    "committed": 450000000,
+    "spent": 120000000,
+    "forecast": 1750000000,
+    "funding_sources": [{"source":"Central budget","amount":1000000000},{"source":"Regional contribution","amount":800000000}],
+    "notes": "Indicative budget; subject to procurement outcomes."
+  },
+  {
+    "id": "budg-eastside-housing",
+    "project_id": "proj-eastside-housing",
+    "currency": "GBP",
+    "approved": 650000000,
+    "committed": 150000000,
+    "spent": 8000000,
+    "forecast": 640000000,
+    "funding_sources": [{"source":"Public grant","amount":300000000},{"source":"Developer contribution","amount":350000000}],
+    "notes": "Includes infrastructure enabling works and subsidy for affordable housing." 
+  }
+]

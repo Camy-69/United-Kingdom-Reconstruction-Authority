@@ -1,0 +1,912 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="UKRA — the public operating system for Britain's hypothetical 2026–2055 reconstruction programme.">
+  <title>UKRA | United Kingdom Reconstruction Authority</title>
+  <style>
+:root {
+  --navy: #0a1628;
+  --navy-light: #132744;
+  --navy-2: #1a3055;
+  --navy-3: #0f2847;
+  --white: #ffffff;
+  --white-rgb: 255,255,255;
+  --grey-50: #f8f9fa;
+  --grey-100: #eef0f2;
+  --grey-200: #dde1e5;
+  --grey-300: #bcc3ca;
+  --grey-500: #6b7583;
+  --grey-700: #3a424d;
+  --grey-900: #1a1f25;
+  --green: #1a8a4a;
+  --amber: #e6a817;
+  --red: #c92a2a;
+  --critical: #1a1a1a;
+  --blue: #1a5faa;
+  --blue-light: #e8f0fa;
+  --surface: #f5f7f9;
+  --surface-strong: #edf1f4;
+  --panel: #f1f4f6;
+  --ink: #101820;
+  --muted: #53616f;
+  --accent: #c8960c;
+  --accent-rgb: 200,150,12;
+  --region-fill: #dde4ed;
+  --region-hover: #a8c4e0;
+  --badge-green-bg: #d4edda;
+  --badge-green-color: #0a4623;
+  --badge-amber-bg: #fff3cd;
+  --badge-amber-color: #7a5d00;
+  --badge-red-bg: #fce4e4;
+  --badge-red-color: #7a1a1a;
+  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.14);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --transition: 0.2s ease;
+}
+
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+
+html { scroll-behavior:smooth; font-size:16px; }
+body {
+  font-family:var(--font);
+  background:var(--surface);
+  color:var(--ink);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin:0 0 0.7rem;
+  font-weight:700;
+  line-height:1.2;
+  letter-spacing:-0.03em;
+  color:var(--ink);
+}
+p { margin:0 0 1rem; }
+.eyebrow {
+  display:inline-block;
+  margin:0 0 0.8rem;
+  font-size:0.72rem;
+  line-height:1.5;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  font-weight:700;
+  color:var(--muted);
+}
+.section {
+  padding:2.25rem 0;
+}
+.section + .section { margin-top:0.1rem; }
+.section-heading {
+  margin-bottom:1.25rem;
+}
+.section-heading h2 {
+  font-size:clamp(1.7rem, 2vw, 2.5rem);
+  line-height:1.18;
+  letter-spacing:-0.04em;
+  margin-bottom:0.2rem;
+  color:var(--ink);
+}
+.section-heading--split {
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:1.5rem;
+}
+.section-heading--split > * { flex:1; }
+.section-heading--split p:last-child {
+  max-width:58ch;
+  margin:0;
+  color:var(--muted);
+}
+.button {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:0.5rem;
+  border-radius:10px;
+  padding:0.8rem 1.1rem;
+  font-weight:700;
+  font-size:0.9rem;
+  line-height:1.2;
+  text-decoration:none;
+  transition:transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.button:hover {
+  transform:translateY(-1px);
+}
+.button--primary {
+  background:var(--accent);
+  color:var(--navy);
+  box-shadow:var(--shadow-sm);
+}
+.button--secondary {
+  background:rgba(var(--white-rgb),0.08);
+  color:var(--white);
+  border:1px solid rgba(var(--white-rgb),0.2);
+}
+.scoreboard {
+  background: var(--surface);
+}
+.score-grid {
+  display:grid;
+  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.score-grid > div {
+  background: rgba(255,255,255,0.35);
+  border: 1px solid rgba(10,22,40,0.08);
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  display:flex;
+  align-items:baseline;
+  gap:0.4rem 0.6rem;
+  flex-wrap:wrap;
+  min-height: 72px;
+}
+.score-grid strong {
+  color: var(--ink);
+  line-height:1.1;
+}
+.score-grid span {
+  color: var(--muted);
+}
+.feature-grid {
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+.feature-card {
+  background: var(--surface-strong);
+  border:1px solid rgba(10,22,40,0.09);
+  border-radius: 14px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
+  min-height: 180px;
+}
+.feature-card__tag {
+  color: var(--muted);
+  font-weight:700;
+  letter-spacing:0.12em;
+}
+.feature-card h3,
+.feature-card p,
+.feature-card__link {
+  color: var(--ink);
+}
+
+/* Layout containers and header used above-the-fold */
+.container { max-width:1200px; margin:0 auto; padding:0 1.25rem; }
+.header { background:var(--navy-light); color:var(--white); padding:1.2rem 0; position:sticky; top:0; z-index:100; box-shadow:var(--shadow-md); }
+.site-header__inner {
+  display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;
+}
+.logo-section{display:flex;align-items:center;gap:1rem; flex-shrink:0;}
+.logo-icon{width:48px;height:48px;background:var(--accent);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.3rem;color:var(--navy)}
+.logo-text h1{font-size:1.25rem;font-weight:700;margin:0}
+.logo-text span{font-size:0.75rem;opacity:0.8}
+ 
+/* Critical: navigation */
+.main-nav { display:flex; gap:0.2rem 0.15rem; flex-wrap:wrap; align-items:center; justify-content:flex-start; }
+.main-nav a, .main-nav button {
+  background:none; border:none; color:rgba(var(--white-rgb),0.75);
+  padding:0.5rem 0.75rem; border-radius:var(--radius-sm);
+  cursor:pointer; font-size:0.8rem; font-family:var(--font);
+  transition:var(--transition); white-space:nowrap; text-decoration:none; display:inline-flex; align-items:center;
+}
+.main-nav a:hover, .main-nav a.active, .main-nav button:hover, .main-nav button.active {
+  background:rgba(var(--white-rgb),0.12); color:var(--white);
+}
+.menu-toggle { display:none; }
+@media (max-width:900px) {
+  .menu-toggle { display:inline-flex; align-items:center; justify-content:center; background:rgba(var(--white-rgb),0.08); color:var(--white); border:1px solid rgba(var(--white-rgb),0.18); border-radius:var(--radius-sm); padding:0.5rem 0.8rem; font-family:var(--font); cursor:pointer; }
+  .main-nav { display:none; width:100%; margin-top:0.75rem; }
+  .main-nav--open { display:flex; }
+  .site-header__inner { flex-wrap:wrap; align-items:flex-start; }
+  .main-nav a, .main-nav button { width:100%; justify-content:center; }
+}
+@media (max-width:640px) {
+  .header { padding:1rem 0; }
+  .logo-section { width:100%; }
+  .logo-text span { letter-spacing:0.04em; }
+}
+
+/* Critical: hero / above-the-fold */
+.hero {
+  background:linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 50%, var(--navy-3) 100%);
+  color:var(--white); padding:3rem 2rem; border-radius:var(--radius-lg);
+  margin-bottom:2rem; position:relative; overflow:hidden;
+}
+.hero::after {
+  content:''; position:absolute; top:-50%; right:-20%;
+  width:500px; height:500px;
+  background:radial-gradient(circle, rgba(var(--accent-rgb),0.15) 0%, transparent 70%);
+  border-radius:50%;
+}
+.hero-badge {
+  display:inline-block; background:rgba(var(--white-rgb),0.12);
+  padding:0.3rem 0.9rem; border-radius:20px; font-size:0.8rem;
+  margin-bottom:1rem; letter-spacing:0.03em;
+}
+.hero h2 { font-size:2.4rem; font-weight:800; line-height:1.2; margin-bottom:0.5rem; position:relative; z-index:1; }
+.hero p { font-size:1.1rem; opacity:0.8; max-width:650px; position:relative; z-index:1; }
+.hero-stats {
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr));
+  gap:1.2rem; margin-top:2rem; position:relative; z-index:1;
+}
+.hero-stat {
+  background:rgba(var(--white-rgb),0.08);
+  padding:1.2rem; border-radius:var(--radius-md);
+  border:1px solid rgba(var(--white-rgb),0.1);
+}
+.hero-stat .val { font-size:1.8rem; font-weight:800; color:var(--accent); }
+.hero-stat .lbl { font-size:0.78rem; opacity:0.7; margin-top:0.2rem; }
+
+.map-container {
+  background:linear-gradient(180deg, #f9fbff 0%, #eef3f8 100%);
+  border:1px solid var(--grey-200);
+  border-radius:var(--radius-lg);
+  padding:1.25rem;
+  box-shadow:var(--shadow-sm);
+}
+.map-container svg {
+  width:100%; height:auto; display:block;
+  border-radius:12px;
+  background:linear-gradient(180deg, rgba(167, 201, 232, 0.15) 0%, rgba(255,255,255,0) 100%);
+}
+.map-region {
+  cursor:pointer;
+  transition:transform 0.2s ease, filter 0.2s ease;
+  transform-origin:center;
+}
+.map-region:hover {
+  filter:brightness(0.98);
+}
+.map-region.is-active .map-region__shape,
+.map-region:focus .map-region__shape {
+  fill:var(--navy-light);
+  stroke:#d9ebff;
+  stroke-width:2;
+}
+.map-region__shape {
+  fill:#dfeaf6;
+  stroke:#ffffff;
+  stroke-width:2;
+  transition:fill 0.2s ease, stroke 0.2s ease;
+}
+.map-region__label {
+  fill:#2d3a46;
+  font-size:11px;
+  font-weight:700;
+  font-family:var(--font);
+  pointer-events:none;
+  text-anchor:middle;
+}
+.region-info-panel {
+  margin-top:1.25rem;
+  display:none;
+  background:var(--blue-light);
+  border:1px solid rgba(26,95,170,0.15);
+  border-left:4px solid var(--blue);
+  border-radius:var(--radius-md);
+  padding:1.2rem 1.3rem;
+}
+.region-info-panel.visible {
+  display:block;
+}
+.region-info-panel h3 {
+  margin-bottom:0.35rem;
+  color:var(--navy);
+  font-size:1.2rem;
+}
+.region-info-panel__meta {
+  display:inline-block;
+  margin-bottom:0.5rem;
+  padding:0.3rem 0.65rem;
+  border-radius:999px;
+  background:rgba(26,95,170,0.08);
+  color:var(--blue);
+  font-size:0.72rem;
+  font-weight:700;
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+}
+.region-info-panel p {
+  color:var(--grey-700);
+  line-height:1.6;
+}
+.region-info-panel__stats {
+  display:grid;
+  grid-template-columns:repeat(2, minmax(120px, 1fr));
+  gap:0.75rem;
+  margin:0.65rem 0 0.9rem;
+}
+.region-info-panel__stats div {
+  background:rgba(255,255,255,0.52);
+  border:1px solid rgba(26,95,170,0.08);
+  border-radius:10px;
+  padding:0.8rem 0.85rem;
+}
+.region-info-panel__stats strong {
+  display:block;
+  font-size:1.1rem;
+  color:var(--navy);
+  margin-bottom:0.1rem;
+}
+.region-info-panel__stats span {
+  font-size:0.72rem;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  color:var(--grey-700);
+}
+
+/* Small-screen adjustments affecting above-the-fold */
+@media (max-width:900px) {
+  .main-nav { justify-content:center; }
+  .hero h2 { font-size:1.6rem; }
+}
+</style>
+  <link rel="stylesheet" href="style.noncritical.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="style.noncritical.css"></noscript>
+</head>
+
+<body>
+  <header class="site-header header">
+    <div class="container site-header__inner">
+      <a class="brand logo-section" href="#home" aria-label="UKRA home">
+        <span class="brand__mark logo-icon">UK</span>
+        <div class="logo-text">
+          <h1>UKRA</h1>
+          <span>United Kingdom Reconstruction Authority</span>
+        </div>
+      </a>
+
+      <button class="menu-toggle" type="button" aria-controls="main-nav" aria-expanded="false">
+        Menu
+      </button>
+
+      <nav class="main-nav" id="main-nav" aria-label="Main navigation">
+          <a href="#home">Home</a>
+          <a href="#reconstruction">Reconstruction</a>
+          <a href="#projects">Projects</a>
+          <a href="#map">Map</a>
+          <a href="#cities">Cities</a>
+          <a href="infrastructure.html">Infrastructure</a>
+          <a href="transport.html">Transport</a>
+          <a href="housing.html">Housing</a>
+          <a href="energy.html">Energy</a>
+          <a href="environment.html">Environment</a>
+          <a href="skills-jobs.html">Jobs &amp; Skills</a>
+          <a href="technical-councils.html">Technical Councils</a>
+          <a href="standards.html">Standards</a>
+          <a href="procurement-data.html">Procurement</a>
+          <a href="finance.html">Finance</a>
+          <a href="data.html">Data</a>
+          <a href="public.html">Public</a>
+          <a href="public-services.html">Public services</a>
+          <a href="transparency.html">Transparency</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="container hero__grid">
+        <div class="hero__content">
+          <p class="eyebrow">UK RECONSTRUCTION • 2026–2055</p>
+          <h2>Building a better Britain.</h2>
+          <p class="hero__lead">
+            UKRA is the public-facing control centre for a hypothetical
+            £2 trillion, 25–30 year national reconstruction programme.
+          </p>
+
+          <div class="hero__actions">
+            <a class="button button--primary" href="#projects">Explore projects</a>
+            <a class="button button--secondary" href="#reconstruction">The programme</a>
+          </div>
+        </div>
+
+        <aside class="programme-card" aria-label="Programme summary">
+          <p class="programme-card__label">National programme</p>
+          <strong>£2.0 trillion</strong>
+          <span>2026–2055</span>
+          <div class="programme-card__status">
+            <span class="status-dot status-dot--green"></span>
+            Public reconstruction dashboard
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="scoreboard" id="scorecard">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">UK RECONSTRUCTION SCORECARD</p>
+          <h2>How is Britain progressing?</h2>
+        </div>
+
+        <div class="score-grid">
+          <div><strong>76%</strong><span>Infrastructure</span></div>
+          <div><strong>68%</strong><span>Housing</span></div>
+          <div><strong>72%</strong><span>Transport</span></div>
+          <div><strong>81%</strong><span>Energy</span></div>
+          <div><strong>65%</strong><span>Environment</span></div>
+          <div><strong>74%</strong><span>Skills</span></div>
+          <div><strong>69%</strong><span>Regional economy</span></div>
+          <div><strong>73%</strong><span>Public services</span></div>
+          <div class="score-grid__overall"><strong>72%</strong><span>Overall</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="reconstruction">
+      <div class="container">
+        <div class="section-heading section-heading--split">
+          <div>
+            <p class="eyebrow">THE RECONSTRUCTION PROGRAMME</p>
+            <h2>One national plan, visible to everyone.</h2>
+          </div>
+          <p>
+            The structure follows the supplied UKRA plan: national strategy,
+            projects, regions, cities, infrastructure, housing, environment,
+            skills, standards, finance, data and accountability.
+          </p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature-card" id="scorecard">
+            <span class="feature-card__tag">UKRA</span>
+            <h3>UK Reconstruction Scorecard</h3>
+            <p>Infrastructure, housing, transport, energy, environment, skills, regional economy and public services.</p>
+            <a class="feature-card__link" href="#scorecard">Explore →</a>
+          </article>
+          <article class="feature-card" id="near-me">
+            <span class="feature-card__tag">UKRA</span>
+            <h3>What is happening near me?</h3>
+            <p>Find projects, upgrades and construction activity around your postcode.</p>
+            <a class="feature-card__link" href="#near-me">Explore →</a>
+          </article>
+          <article class="feature-card" id="timeline">
+            <span class="feature-card__tag">UKRA</span>
+            <h3>National Reconstruction Plan</h3>
+            <p>Follow the 2026–2055 programme from planning through infrastructure, services, housing and restoration.</p>
+            <a class="feature-card__link" href="#timeline">Explore →</a>
+          </article>
+          <article class="feature-card" id="projects">
+            <span class="feature-card__tag">UKRA</span>
+            <h3>Live Projects</h3>
+            <p>Explore projects by status, region, city and sector.</p>
+            <a class="feature-card__link" href="#projects">Explore →</a>
+          </article>
+          <article class="feature-card" id="health">
+            <span class="feature-card__tag">UKRA</span>
+            <h3>Infrastructure Health</h3>
+            <p>See how electricity, water, sewage, fibre, rail, roads, housing and services are performing.</p>
+            <a class="feature-card__link" href="#health">Explore →</a>
+          </article>
+          <article class="feature-card" id="councils">
+            <span class="feature-card__tag">UKRA</span>
+            <h3>Technical Councils</h3>
+            <p>Operational oversight across transport, housing, energy, digital and delivery standards.</p>
+            <a class="feature-card__link" href="technical-councils.html">Explore →</a>
+          </article>
+          <article class="feature-card" id="finance">
+            <span class="feature-card__tag">UKRA</span>
+            <h3>Where Your Money Goes</h3>
+            <p>Explore reconstruction spending by year, region, city, sector and project.</p>
+            <a class="feature-card__link" href="finance.html">Explore →</a>
+          </article>
+          <article class="feature-card" id="environment-card">
+            <span class="feature-card__tag">UKRA</span>
+            <h3>Environment &amp; climate resilience</h3>
+            <p>Flood protection, coastal resilience, air quality, nature recovery and climate adaptation across the UK.</p>
+            <a class="feature-card__link" href="environment.html">Explore →</a>
+          </article>
+          <article class="feature-card" id="skills-jobs-card">
+            <span class="feature-card__tag">UKRA</span>
+            <h3>Skills &amp; jobs</h3>
+            <p>Training pipelines, regional labour markets, apprenticeships and delivery workforce planning.</p>
+            <a class="feature-card__link" href="skills-jobs.html">Explore →</a>
+          </article>
+          <article class="feature-card" id="standards">
+            <span class="feature-card__tag">UKRA</span>
+            <h3>Standards &amp; design code</h3>
+            <p>Common technical standards covering safety, resilience, accessibility and long-term performance.</p>
+            <a class="feature-card__link" href="standards.html">Explore →</a>
+          </article>
+          <article class="feature-card" id="procurement">
+            <span class="feature-card__tag">UKRA</span>
+            <h3>Procurement data</h3>
+            <p>Track the contract pipeline, supplier landscape and delivery priorities across the programme.</p>
+            <a class="feature-card__link" href="procurement-data.html">Explore →</a>
+          </article>
+          <article class="feature-card" id="public-services-standard">
+            <span class="feature-card__tag">UKRA</span>
+            <h3>Public services standards</h3>
+            <p>Design standards for hospitals, fire stations, police facilities and prisons, with capacity and resilience benchmarks.</p>
+            <a class="feature-card__link" href="public-services.html">Explore →</a>
+          </article>
+          <article class="feature-card" id="transparency">
+            <span class="feature-card__tag">UKRA</span>
+            <h3>Transparency &amp; accountability</h3>
+            <p>Open reporting on spend, delivery risk, outcomes and public benefits across UKRA projects.</p>
+            <a class="feature-card__link" href="transparency.html">Explore →</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--dark" id="timeline">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">2026–2055 ROADMAP</p>
+          <h2>Reconstruction in phases.</h2>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline__item" data-detail="Surveys and planning across regions."><span>2026</span><h3>Planning & surveying</h3></div>
+          <div class="timeline__item" data-detail="Utilities upgrades, grid resilience and energy projects."><span>2027–2032</span><h3>Utilities & energy</h3></div>
+          <div class="timeline__item" data-detail="Major transport investments and network upgrades."><span>2030–2038</span><h3>Transport</h3></div>
+          <div class="timeline__item" data-detail="Public services modernisation and capacity building."><span>2032–2042</span><h3>Public services</h3></div>
+          <div class="timeline__item" data-detail="Housing construction and community development."><span>2035–2050</span><h3>Housing & communities</h3></div>
+          <div class="timeline__item" data-detail="Ongoing environmental recovery and long-term maintenance."><span>2026–2055</span><h3>Environmental restoration & maintenance</h3></div>
+        </div>
+        <div id="timeline-details" class="timeline-details" aria-live="polite">Click a timeline item to see details.</div>
+      </div>
+    </section>
+
+    <section class="section" id="map">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">UK RECONSTRUCTION MAP</p>
+          <h2>Interactive map of the UK</h2>
+        </div>
+        <div class="map-container" role="region" aria-label="Interactive UK map">
+          <svg viewBox="0 0 680 420" xmlns="http://www.w3.org/2000/svg" aria-labelledby="map-title" role="img">
+            <title id="map-title">UK reconstruction map</title>
+            <g data-region="Scotland" data-summary="£42.8bn for grid resilience, housing and transport across Scotland." class="map-region" tabindex="0" aria-label="Scotland region">
+              <path class="map-region__shape" d="M104 30 L182 32 L206 58 L182 88 L136 102 L98 90 L82 62 Z"/>
+              <text class="map-region__label" x="145" y="70">Scotland</text>
+            </g>
+            <g data-region="North East" data-summary="£19.4bn targeted at rail, coastal resilience and industrial jobs." class="map-region" tabindex="0" aria-label="North East region">
+              <path class="map-region__shape" d="M204 92 L236 82 L270 92 L282 116 L250 136 L216 128 L198 106 Z"/>
+              <text class="map-region__label" x="240" y="114">North East</text>
+            </g>
+            <g data-region="North West" data-summary="£31.7bn for water networks, housing renewal and fibre upgrades." class="map-region" tabindex="0" aria-label="North West region">
+              <path class="map-region__shape" d="M148 118 L218 116 L220 164 L188 176 L150 170 L122 146 Z"/>
+              <text class="map-region__label" x="170" y="150">North West</text>
+            </g>
+            <g data-region="Yorkshire &amp; Humber" data-summary="£28.6bn across rail, local transport and public service hubs." class="map-region" tabindex="0" aria-label="Yorkshire and Humber region">
+              <path class="map-region__shape" d="M222 138 L292 136 L302 168 L275 218 L228 214 L202 180 Z"/>
+              <text class="map-region__label" x="250" y="180">Yorkshire</text>
+            </g>
+            <g data-region="East Midlands" data-summary="£24.1bn for logistics corridors, flood defence and modern housing." class="map-region" tabindex="0" aria-label="East Midlands region">
+              <path class="map-region__shape" d="M300 166 L366 164 L382 210 L344 244 L292 232 L280 193 Z"/>
+              <text class="map-region__label" x="330" y="196">East Midlands</text>
+            </g>
+            <g data-region="West Midlands" data-summary="£26.5bn of housing, energy and transport projects around the Midlands." class="map-region" tabindex="0" aria-label="West Midlands region">
+              <path class="map-region__shape" d="M238 214 L292 226 L302 266 L270 298 L222 286 L210 246 Z"/>
+              <text class="map-region__label" x="255" y="256">West Midlands</text>
+            </g>
+            <g data-region="Wales" data-summary="£18.3bn for resilient infrastructure, coastal recovery and community housing." class="map-region" tabindex="0" aria-label="Wales region">
+              <path class="map-region__shape" d="M116 186 L150 184 L168 220 L142 268 L108 250 L92 212 Z"/>
+              <text class="map-region__label" x="130" y="220">Wales</text>
+            </g>
+            <g data-region="East of England" data-summary="£22.9bn centred on flood resilience, digital fibre and civic recovery." class="map-region" tabindex="0" aria-label="East of England region">
+              <path class="map-region__shape" d="M370 178 L454 182 L470 220 L440 270 L390 276 L354 234 Z"/>
+              <text class="map-region__label" x="413" y="225">East of England</text>
+            </g>
+            <g data-region="London" data-summary="£37.2bn in utilities, public services and transport transformation." class="map-region" tabindex="0" aria-label="London region">
+              <path class="map-region__shape" d="M454 250 L494 246 L502 282 L472 300 L436 290 L426 266 Z"/>
+              <text class="map-region__label" x="465" y="275">London</text>
+            </g>
+            <g data-region="South East" data-summary="£35.4bn across ports, flood defence, housing and digital connectivity." class="map-region" tabindex="0" aria-label="South East region">
+              <path class="map-region__shape" d="M430 228 L552 230 L568 284 L538 332 L476 320 L436 286 Z"/>
+              <text class="map-region__label" x="500" y="275">South East</text>
+            </g>
+            <g data-region="South West" data-summary="£27.6bn covering energy, coastal resilience and regional road upgrades." class="map-region" tabindex="0" aria-label="South West region">
+              <path class="map-region__shape" d="M218 286 L312 292 L336 330 L304 362 L250 360 L210 330 Z"/>
+              <text class="map-region__label" x="270" y="322">South West</text>
+            </g>
+          </svg>
+        </div>
+        <div class="region-info-panel" id="region-info-panel" aria-hidden="true">
+          <button class="modal-close" id="region-info-close" aria-label="Close region panel">×</button>
+          <h3 id="region-info-title">Region</h3>
+          <p id="region-info-body">Select a region on the map to see a summary of projects and investment.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="projects">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">PROJECT CONTROL CENTRE</p>
+          <h2>Every project has a public record.</h2>
+        </div>
+
+        <div class="project-taxonomy" aria-label="Project taxonomy filters">
+          <div class="taxonomy-group">
+            <span class="taxonomy-label">Sector</span>
+            <div class="taxonomy-filters">
+              <button class="taxonomy-filter taxonomy-filter--sector is-active" data-group="sector" data-value="all" type="button">All</button>
+              <button class="taxonomy-filter taxonomy-filter--sector" data-group="sector" data-value="transport" type="button">Transport</button>
+              <button class="taxonomy-filter taxonomy-filter--sector" data-group="sector" data-value="housing" type="button">Housing</button>
+              <button class="taxonomy-filter taxonomy-filter--sector" data-group="sector" data-value="energy" type="button">Energy</button>
+              <button class="taxonomy-filter taxonomy-filter--sector" data-group="sector" data-value="water" type="button">Water</button>
+            </div>
+          </div>
+          <div class="taxonomy-group">
+            <span class="taxonomy-label">Status</span>
+            <div class="taxonomy-filters">
+              <button class="taxonomy-filter taxonomy-filter--status is-active" data-group="status" data-value="all" type="button">All</button>
+              <button class="taxonomy-filter taxonomy-filter--status" data-group="status" data-value="on-schedule" type="button">On schedule</button>
+              <button class="taxonomy-filter taxonomy-filter--status" data-group="status" data-value="monitoring" type="button">Monitoring</button>
+            </div>
+          </div>
+        </div>
+
+        <p class="project-filter-summary" aria-live="polite">Showing 3 active programmes across the national portfolio.</p>
+
+        <table class="project-table">
+          <thead>
+            <tr>
+              <th>Project</th>
+              <th>Region</th>
+              <th>Status</th>
+              <th>Completion</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-sector="transport" data-status="on-schedule" data-region="Yorkshire &amp; Humber">
+              <td><a href="leeds.html">Leeds Integrated Transport Programme</a></td>
+              <td>Yorkshire &amp; Humber</td>
+              <td><span class="pill pill--green">On schedule</span></td>
+              <td>2035</td>
+            </tr>
+            <tr data-sector="energy" data-status="monitoring" data-region="UK-wide">
+              <td><a href="national-fibre-upgrade.html">National Fibre Upgrade</a></td>
+              <td>UK-wide</td>
+              <td><span class="pill pill--amber">Monitoring</span></td>
+              <td>2032</td>
+            </tr>
+            <tr data-sector="water" data-status="on-schedule" data-region="North West">
+              <td><a href="water-network-renewal.html">Water Network Renewal</a></td>
+              <td>North West</td>
+              <td><span class="pill pill--green">On schedule</span></td>
+              <td>2038</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section section--muted" id="near-me">
+      <div class="container location-panel">
+        <div>
+          <p class="eyebrow">LOCAL RECONSTRUCTION</p>
+          <h2>What is happening near me?</h2>
+          <p>Enter a postcode to find projects within 1, 5 and 10 miles.</p>
+        </div>
+        <form class="postcode-form">
+          <label for="postcode">Postcode</label>
+          <div class="postcode-form__row">
+            <input id="postcode" name="postcode" type="text" placeholder="e.g. LS1 1UR">
+            <button class="button button--primary" type="button">Find projects</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="section" id="infrastructure">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">INFRASTRUCTURE</p>
+          <h2>Britain's infrastructure at a glance.</h2>
+        </div>
+        <div class="metric-grid">
+          <div class="metric"><span>Electricity</span><strong>82/100</strong></div>
+          <div class="metric"><span>Water</span><strong>74/100</strong></div>
+          <div class="metric"><span>Sewage</span><strong>69/100</strong></div>
+          <div class="metric"><span>Fibre</span><strong>94/100</strong></div>
+          <div class="metric"><span>Rail</span><strong>71/100</strong></div>
+          <div class="metric"><span>Roads</span><strong>68/100</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--dark" id="cities">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">CITY MASTERPLANS</p>
+          <h2>Every major city gets a reconstruction plan.</h2>
+        </div>
+        <div class="city-grid">
+          <a href="leeds.html" class="city-card"><strong>Leeds</strong><span>2026 → 2055</span></a>
+          <a href="jaywick.html" class="city-card"><strong>Jaywick &amp; Clacton</strong><span>2026 → 2040</span></a>
+          <a href="manchester.html" class="city-card"><strong>Manchester</strong><span>2026 → 2055</span></a>
+          <a href="birmingham.html" class="city-card"><strong>Birmingham</strong><span>2026 → 2055</span></a>
+          <a href="glasgow.html" class="city-card"><strong>Glasgow</strong><span>2026 → 2055</span></a>
+          <a href="edinburgh.html" class="city-card"><strong>Edinburgh</strong><span>2026 → 2055</span></a>
+          <a href="newcastle.html" class="city-card"><strong>Newcastle</strong><span>2026 → 2055</span></a>
+          <a href="liverpool.html" class="city-card"><strong>Liverpool</strong><span>2026 → 2055</span></a>
+          <a href="cardiff.html" class="city-card"><strong>Cardiff</strong><span>2026 → 2055</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="housing">
+      <div class="container">
+        <div class="section-heading section-heading--split">
+          <div>
+            <p class="eyebrow">HOUSING</p>
+            <h2>Future-proof homes by design.</h2>
+          </div>
+          <p>
+            Housing standards cover space, accessibility, energy, electrical
+            capacity, fibre, EV readiness, solar and battery readiness.
+          </p>
+        </div>
+        <div class="housing-library-toolbar" aria-label="Housing standards filters">
+          <button class="housing-filter is-active" data-filter="all" type="button"><span class="housing-filter__label">All standards</span><span class="housing-filter__count">8</span></button>
+          <button class="housing-filter" data-filter="accessibility" type="button"><span class="housing-filter__label">Accessibility</span><span class="housing-filter__count">3</span></button>
+          <button class="housing-filter" data-filter="low-carbon" type="button"><span class="housing-filter__label">Low-carbon</span><span class="housing-filter__count">4</span></button>
+          <button class="housing-filter" data-filter="digital" type="button"><span class="housing-filter__label">Digital</span><span class="housing-filter__count">5</span></button>
+          <button class="housing-filter" data-filter="family" type="button"><span class="housing-filter__label">Family-sized</span><span class="housing-filter__count">5</span></button>
+          <button class="housing-filter" data-filter="ev-ready" type="button"><span class="housing-filter__label">EV-ready</span><span class="housing-filter__count">4</span></button>
+        </div>
+        <div class="housing-legend" aria-label="Housing standards legend">
+          <span class="housing-legend__item"><span class="housing-legend__swatch housing-legend__swatch--energy"></span>Energy</span>
+          <span class="housing-legend__item"><span class="housing-legend__swatch housing-legend__swatch--accessibility"></span>Accessibility</span>
+          <span class="housing-legend__item"><span class="housing-legend__swatch housing-legend__swatch--digital"></span>Digital</span>
+          <span class="housing-legend__item"><span class="housing-legend__swatch housing-legend__swatch--resilience"></span>Resilience</span>
+        </div>
+        <div class="house-grid">
+          <div class="house-card" data-house="H1" data-tags="accessibility digital resilience ev-ready" tabindex="0"><span>H1</span><h3>1-bedroom apartment</h3><p class="house-card__specs" title="Accessible • EV-ready • Fibre-ready">Accessible • EV-ready • Fibre-ready</p></div>
+          <div class="house-card" data-house="H2" data-tags="family low-carbon digital ev-ready" tabindex="0"><span>H2</span><h3>2-bedroom house</h3><p class="house-card__specs" title="Net-zero • Solar-ready • Storage">Net-zero • Solar-ready • Storage</p></div>
+          <div class="house-card" data-house="H3" data-tags="family low-carbon resilience ev-ready" tabindex="0"><span>H3</span><h3>3-bedroom family house</h3><p class="house-card__specs" title="Space standard • Heat pump • Battery-ready">Space standard • Heat pump • Battery-ready</p></div>
+          <div class="house-card" data-house="H4" data-tags="family low-carbon digital ev-ready" tabindex="0"><span>H4</span><h3>4-bedroom family house</h3><p class="house-card__specs" title="Dual-aspect • Electrical capacity • EV-ready">Dual-aspect • Electrical capacity • EV-ready</p></div>
+          <div class="house-card" data-house="H5" data-tags="family digital low-carbon ev-ready" tabindex="0"><span>H5</span><h3>5-bedroom family house</h3><p class="house-card__specs" title="Large family • Smart metering • Solar-ready">Large family • Smart metering • Solar-ready</p></div>
+          <div class="house-card" data-house="H6" data-tags="accessibility resilience adaptability ev-ready" tabindex="0"><span>H6</span><h3>Accessible bungalow</h3><p class="house-card__specs" title="Step-free • Adaptable • Warm homes">Step-free • Adaptable • Warm homes</p></div>
+          <div class="house-card" data-house="H7" data-tags="family resilience digital low-carbon" tabindex="0"><span>H7</span><h3>Townhouse</h3><p class="house-card__specs" title="Multi-level • Fibre • Low-carbon">Multi-level • Fibre • Low-carbon</p></div>
+          <div class="house-card" data-house="H8" data-tags="accessibility digital resilience ev-ready" tabindex="0"><span>H8</span><h3>Low-rise apartment</h3><p class="house-card__specs" title="Shared services • EV • Air quality">Shared services • EV • Air quality</p></div>
+        </div>
+        <p class="housing-library__empty" hidden>No housing standards match this filter.</p>
+
+        <div class="housing-compare" aria-label="Compare dwelling types">
+          <div class="housing-compare__header">
+            <h3>Compare dwelling types</h3>
+            <span>Selected standards</span>
+          </div>
+          <div class="housing-compare__grid">
+            <article class="housing-compare__item">
+              <h4>1-bed apartment</h4>
+              <dl>
+                <div><dt>Floor area</dt><dd>52m²</dd></div>
+                <div><dt>Energy target</dt><dd>EPC B</dd></div>
+                <div><dt>Accessibility</dt><dd>High</dd></div>
+                <div><dt>EV-ready</dt><dd>Yes</dd></div>
+              </dl>
+            </article>
+            <article class="housing-compare__item">
+              <h4>3-bed family house</h4>
+              <dl>
+                <div><dt>Floor area</dt><dd>98m²</dd></div>
+                <div><dt>Energy target</dt><dd>Low-carbon</dd></div>
+                <div><dt>Accessibility</dt><dd>Medium</dd></div>
+                <div><dt>EV-ready</dt><dd>Yes</dd></div>
+              </dl>
+            </article>
+            <article class="housing-compare__item">
+              <h4>Accessible bungalow</h4>
+              <dl>
+                <div><dt>Floor area</dt><dd>84m²</dd></div>
+                <div><dt>Energy target</dt><dd>Warm homes</dd></div>
+                <div><dt>Accessibility</dt><dd>Very high</dd></div>
+                <div><dt>EV-ready</dt><dd>Optional</dd></div>
+              </dl>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="modal-overlay" id="housing-modal" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="housing-modal-title">
+        <button class="modal-close" id="housing-modal-close" aria-label="Close housing standards">×</button>
+        <h2 id="housing-modal-title">Housing standard</h2>
+        <div id="housing-modal-body"></div>
+      </div>
+    </div>
+
+    <section class="section section--muted" id="finance">
+      <div class="container finance-layout">
+        <div class="finance-copy">
+          <p class="eyebrow">PUBLIC FINANCE</p>
+          <h2>Funding, delivery and accountability.</h2>
+          <p>The full finance dashboard has been moved to the dedicated finance page so the programme can be reviewed in a cleaner control-panel format.</p>
+          <div class="finance-summary-list">
+            <div><span>Funding approved</span><strong>£1.47T</strong></div>
+            <div><span>Active contracts</span><strong>2,184</strong></div>
+            <div><span>Forecast delivery</span><strong>72%</strong></div>
+          </div>
+          <p class="mt-2"><a class="button button--primary" href="finance.html">Open finance page</a></p>
+        </div>
+
+        <div class="finance-panel" aria-label="Public finance dashboard summary panel">
+          <div class="finance-kpis">
+            <div class="finance-kpi">
+              <span>Committed</span>
+              <strong>£1.47T</strong>
+              <small>73% of envelope</small>
+            </div>
+            <div class="finance-kpi">
+              <span>Forecast spend</span>
+              <strong>£482B</strong>
+              <small>Y2026 pipeline</small>
+            </div>
+            <div class="finance-kpi">
+              <span>Cost variance</span>
+              <strong>+2.4%</strong>
+              <small>vs approved</small>
+            </div>
+            <div class="finance-kpi">
+              <span>Delivery risk</span>
+              <strong>Low</strong>
+              <small>12 priority sites</small>
+            </div>
+          </div>
+          <div class="finance-chart">
+            <div class="finance-chart__header">
+              <h3>Allocation by sector</h3>
+              <span>2026 pipeline</span>
+            </div>
+            <div class="finance-bars">
+              <div class="budget-row"><span class="budget-label">Transport</span><div class="budget-track"><i class="budget-fill" style="width:82%"></i></div><strong class="budget-value">£428B</strong></div>
+              <div class="budget-row"><span class="budget-label">Energy</span><div class="budget-track"><i class="budget-fill" style="width:76%"></i></div><strong class="budget-value">£391B</strong></div>
+              <div class="budget-row"><span class="budget-label">Housing</span><div class="budget-track"><i class="budget-fill" style="width:64%"></i></div><strong class="budget-value">£335B</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="transparency">
+      <div class="container accountability">
+        <div>
+          <p class="eyebrow">IS UKRA ACTUALLY WORKING?</p>
+          <h2>Money. Time. Quality. Benefits. People. Economy. Environment.</h2>
+        </div>
+        <p>
+          Every major project should expose its budget, schedule, quality,
+          promised benefits, outcomes and long-term maintenance performance.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container site-footer__grid">
+      <div>
+        <strong>UKRA</strong>
+        <p>United Kingdom Reconstruction Authority</p>
+      </div>
+      <div>
+        <p>Transparency • Open Data • Accountability</p>
+        <p>Illustrative programme model for planning and design review purposes.</p>
+        <p>2026–2055 hypothetical reconstruction programme</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="site.js"></script>
+</body>
+</html>

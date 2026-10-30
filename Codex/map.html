@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UKRA — Interactive map (stub)</title>
+  <link rel="stylesheet" href="style.noncritical.css">
+  <style> .map-wrap{background:#fff;border:1px solid var(--grey-200);border-radius:10px;padding:1rem}.region{fill:#e9eef6;stroke:#c6d6f0;cursor:pointer}.region:hover{fill:#d6e6ff}.region-label{font-size:0.8rem;fill:#111}</style>
+</head>
+<body>
+  <header class="site-header"><div class="container site-header__inner"><a class="brand" href="index.html"><span class="logo-icon">UK</span><div class="logo-text"><h1>UKRA</h1><span>United Kingdom Reconstruction Authority</span></div></a><nav class="main-nav" aria-label="Main navigation"><a href="index.html#home">Home</a><a href="index.html#projects">Projects</a><a href="map.html">Map</a></nav></div></header>
+  <main class="container page-shell">
+    <section class="list-block map-wrap">
+      <h3>Interactive map (stub)</h3>
+      <p>Click a region to see a short summary. This is a simplified prototype for the full GIS implementation.</p>
+      <svg viewBox="0 0 680 420" width="100%" height="360" aria-labelledby="map-title" role="img">
+        <title id="map-title">UK reconstruction map (stub)</title>
+        <g class="map-region" data-region="North West">
+          <path class="region" d="M100 140 L200 130 L210 170 L160 190 L110 175 Z" data-summary="North West: investment in housing and water."/>
+          <text class="region-label" x="140" y="160">North West</text>
+        </g>
+        <g class="map-region" data-region="South East">
+          <path class="region" d="M360 180 L480 180 L500 230 L420 250 L360 230 Z" data-summary="South East: ports, flood resilience and housing."/>
+          <text class="region-label" x="410" y="210">South East</text>
+        </g>
+        <g class="map-region" data-region="Scotland">
+          <path class="region" d="M80 30 L160 30 L190 70 L150 95 L100 86 Z" data-summary="Scotland: grid resilience and transport."/>
+          <text class="region-label" x="120" y="68">Scotland</text>
+        </g>
+      </svg>
+
+      <div id="region-info" style="margin-top:1rem;padding:0.75rem;background:var(--grey-50);border-radius:8px;border:1px solid var(--grey-200);">
+        <strong id="region-title">Region</strong>
+        <p id="region-summary" style="margin:0.35rem 0 0;color:#111">Select a region on the map to see summary investment.</p>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="container site-footer__grid"><div><strong>UKRA</strong><p>United Kingdom Reconstruction Authority</p></div><div><p>Map • Prototype • Explore</p></div></div></footer>
+
+  <script>
+    // Enhance region summaries by loading projects, budgets and contractors and aggregating per region
+    (async function(){
+      function slug(s){ return String(s || '').toLowerCase().replace(/&/g,'and').replace(/[\s'’]+/g,'-').replace(/[^a-z0-9\-]/g,''); }
+      function fmtCurrency(n){ try { return new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format(n); } catch(e){ return n; } }
+
+      try{
+        const [projectsRes, budgetsRes, contractorsRes] = await Promise.all([
+          fetch('projects.json'), fetch('budgets.json'), fetch('contractors.json')
+        ]);
+        const projects = await projectsRes.json();
+        const budgets = await budgetsRes.json();
+        const contractors = await contractorsRes.json();
+
+        const budgetByProject = new Map(budgets.map(b => [b.project_id || b.id, b]));
+
+        document.querySelectorAll('.map-region').forEach(function(regionGroup){
+          const path = regionGroup.querySelector('.region');
+          path.addEventListener('click', function(e){
+            const name = regionGroup.getAttribute('data-region') || 'Region';
+            const rawSummary = (e.target.getAttribute('data-summary') || 'No summary available.');
+            const regionId = slug(name);
+
+            const regionProjects = projects.filter(p => String(p.region_id) === regionId);
+
+            if(!regionProjects.length){
+              document.getElementById('region-title').textContent = name;
+              document.getElementById('region-summary').textContent = rawSummary;
+              return;
+            }
+
+            // aggregate counts and budgets
+            const counts = regionProjects.length;
+            const statusCounts = regionProjects.reduce((acc,p)=>{ acc[p.status]=(acc[p.status]||0)+1; return acc; },{});
+            let totalApproved = 0, totalCommitted = 0, totalSpent = 0;
+            regionProjects.forEach(p => {
+              const b = budgetByProject.get(p.id);
+              if(b){ totalApproved += (b.approved||0); totalCommitted += (b.committed||0); totalSpent += (b.spent||0); }
+            });
+
+            // top contractors
+            const contractorCounts = {};
+            regionProjects.forEach(p => (p.contractors||[]).forEach(cid => contractorCounts[cid]=(contractorCounts[cid]||0)+1));
+            const topContractors = Object.entries(contractorCounts).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([cid])=>{
+              const rec = contractors.find(c=>c.id===cid); return rec?rec.company_name:cid;
+            });
+
+            // build HTML summary
+            const parts = [];
+            parts.push(`<div><strong>Projects</strong>: ${counts}</div>`);
+            parts.push(`<div><strong>Approved budget</strong>: ${fmtCurrency(totalApproved)}</div>`);
+            parts.push(`<div><strong>Committed</strong>: ${fmtCurrency(totalCommitted)}</div>`);
+            parts.push(`<div><strong>Spent</strong>: ${fmtCurrency(totalSpent)}</div>`);
+            parts.push('<div><strong>Statuses</strong>: ' + Object.entries(statusCounts).map(([s,c])=>`${s} (${c})`).join(', ') + '</div>');
+            if(topContractors.length) parts.push('<div><strong>Top contractors</strong>: ' + topContractors.join(', ') + '</div>');
+            parts.push('<div style="margin-top:0.5rem;font-size:0.95rem;color:#333">Click a project in the Projects list to open its page (prototype).</div>');
+
+            document.getElementById('region-title').textContent = name;
+            document.getElementById('region-summary').innerHTML = parts.join('');
+          });
+        });
+
+      }catch(err){
+        console.error('Failed to load map data', err);
+      }
+    })();
+  </script>
+</body>
+</html>

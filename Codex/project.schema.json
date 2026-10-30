@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Project",
+  "description": "Schema for a reconstruction project",
+  "type": "object",
+  "required": ["id", "title", "sector", "region_id", "status", "budget_id"],
+  "properties": {
+    "id": {"type": "string", "description": "Unique project identifier"},
+    "title": {"type": "string"},
+    "description": {"type": "string"},
+    "sector": {"type": "string", "description": "Project sector, e.g. housing, transport, energy"},
+    "region_id": {"type": "string"},
+    "city_id": {"type": ["string", "null"]},
+    "neighbourhood_id": {"type": ["string", "null"]},
+    "coordinates": {
+      "type": "object",
+      "properties": {"lat": {"type": "number"}, "lon": {"type": "number"}},
+      "required": ["lat","lon"]
+    },
+    "start_date": {"type": "string", "format": "date"},
+    "expected_completion": {"type": "string", "format": "date"},
+    "status": {"type": "string", "enum": ["planning","design","approval","procurement","construction","commissioning","completed","on-hold","cancelled"]},
+    "capacity": {
+      "type": ["object","string"],
+      "description": "Optional capacity or beneficiary metrics (e.g. beds, homes)",
+      "properties": {
+        "type": {"type": "string"},
+        "value": {}
+      }
+    },
+    "budget_id": {"type": "string"},
+    "contractors": {"type": "array", "items": {"type": "string"}},
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {"id": {"type":"string"}, "title": {"type":"string"}, "url": {"type":"string", "format":"uri"}, "type": {"type":"string"}},
+        "required": ["id","title"]
+      }
+    },
+    "progress": {
+      "type": "array",
+      "items": {"type":"object","properties": {"phase": {"type":"string"}, "date": {"type":"string","format":"date"}, "notes": {"type":"string"}}}
+    },
+    "risks": {
+      "type": "array",
+      "items": {"type":"object","properties": {"id": {"type":"string"}, "category": {"type":"string"}, "level": {"type":"string"}, "description": {"type":"string"}}}
+    },
+    "outcomes": {
+      "type": "array",
+      "items": {"type":"object","properties": {"metric": {"type":"string"}, "value": {}}}
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "cont-arcadia-construction",
+    "company_name": "Arcadia Construction Ltd",
+    "registration_number": "01234567",
+    "country": "UK",
+    "contracts": ["proj-leeds-hospital"],
+    "performance_score": 82,
+    "safety_record": {"incidents_last_3_years": 3, "fatalities": 0},
+    "contact": {"website":"https://arcadia.example.com","email":"info@arcadia.example.com"}
+  },
+  {
+    "id": "cont-nova-developments",
+    "company_name": "Nova Developments PLC",
+    "registration_number": "09876543",
+    "country": "UK",
+    "contracts": ["proj-eastside-housing"],
+    "performance_score": 76,
+    "safety_record": {"incidents_last_3_years": 5, "fatalities": 0},
+    "contact": {"website":"https://nova.example.com","email":"hello@nova.example.com"}
+  }
+]
